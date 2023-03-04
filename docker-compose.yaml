@@ -1,0 +1,9 @@
+services:
+  broker:
+    image: "ghcr.io/pda-aswe/broker:latest"
+    ports:
+      - "1883:1883"
+    restart: on-failure
+  test:
+    image: "ghcr.io/pda-aswe/template"
+    restart: on-failure
