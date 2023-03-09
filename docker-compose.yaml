@@ -4,6 +4,76 @@ services:
     ports:
       - "1883:1883"
     restart: on-failure
-  template:
-    image: "ghcr.io/pda-aswe/template"
+  casepreis:
+    depends_on:
+      - broker
+      - servicepreis
+      - servicekalender
+      - servicemail
+    image: "ghcr.io/pda-aswe/casepreis"
+    restart: on-failure
+  casesport:
+    depends_on:
+      - broker
+      - servicekalender
+      - servicesport
+      - servicewetter
+    image: "ghcr.io/pda-aswe/casesport"
+    restart: on-failure
+  casenews:
+    depends_on:
+      - broker
+      - servicelocation
+      - servicenews
+    image: "ghcr.io/pda-aswe/casenews"
+    restart: on-failure
+  casewelcome:
+    depends_on:
+      - broker
+      - servicekalender
+      - servicewetter
+      - serviceverkehrsinfos
+    image: "ghcr.io/pda-aswe/casewelcome"
+    restart: on-failure
+  servicewetter:
+    depends_on:
+      - broker
+      - servicelocation
+    image: "ghcr.io/pda-aswe/servicewetter"
+    restart: on-failure
+  serviceverkehrsinfos:
+    depends_on:
+      - broker
+      - servicelocation
+    image: "ghcr.io/pda-aswe/serviceverkehrsinfos"
+    restart: on-failure
+  servicekalender:
+    depends_on:
+      - broker
+    image: "ghcr.io/pda-aswe/servicekalender"
+    restart: on-failure
+  servicenews:
+    depends_on:
+      - broker
+    image: "ghcr.io/pda-aswe/servicenews"
+    restart: on-failure
+  servicelocation:
+    depends_on:
+      - broker
+    image: "ghcr.io/pda-aswe/servicelocation"
+    restart: on-failure
+  servicesport:
+    depends_on:
+      - broker
+    image: "ghcr.io/pda-aswe/servicesport"
+    restart: on-failure
+  servicepreis:
+    depends_on:
+      - broker
+    image: "ghcr.io/pda-aswe/servicepreis"
+    restart: on-failure
+  servicemail:
+    depends_on:
+      - broker
+    image: "ghcr.io/pda-aswe/servicemail"
     restart: on-failure
