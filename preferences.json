@@ -1,0 +1,46 @@
+{
+    "mail": "test@test.com",
+    "sport": {
+      "favorite": [
+        {
+          "discipline": "soccer",
+          "team": "VfB Stuttgart"
+        },
+        {
+          "discipline": "football",
+          "team": "Seattle Seahawks"
+        }
+      ],
+      "calenderCondition": {
+        "sunny": true,
+        "homeGame": true
+      }
+    },
+    "welcomeTime": "8:00",
+    "doNotDisturb": [
+      {
+        "from": "23:00",
+        "to": "7:00"
+      }
+    ],
+    "transportPriority": [
+      "car",
+      "bike",
+      "publicTransport",
+      "walk"
+    ],
+    "location": {
+      "home": {
+        "lat": 48.726626655689685,
+        "long": 9.141983686391116
+      },
+      "company": {
+        "lat": 48.81357724239647,
+        "long": 9.167388107273993
+      },
+      "uni": {
+        "lat": 48.782957510186556,
+        "long": 9.166483746149046
+      }
+    }
+}
