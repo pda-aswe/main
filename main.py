@@ -36,18 +36,44 @@ def sendPreferenceStructure(client,rootPath,prefStructure):
             sendPreference(client,os.path.join(rootPath,key),prefStructure[key])
 
 class  PreferencesFileHandler(FileSystemEventHandler):
-    def __init__(self):
+    def __init__(self,mqttClient):
         self.last_modified = datetime.now()
+        self.mqttClient = mqttClient
     def  on_modified(self,  event):
+        global preferences
         if datetime.now() - self.last_modified < timedelta(seconds=1):
             return
         else:
             self.last_modified = datetime.now()
-        preferences = readPreferences(event.src_path)
+        #send difference between old and new preferences
+        newPreferences = readPreferences(event.src_path)
+        preferenceDifference = jsonDifference(preferences,newPreferences)
+        if preferenceDifference is not None:
+            sendPreferenceStructure(self.mqttClient,"pref",preferenceDifference)
+        preferences = newPreferences
     def  on_created(self,  event):
+        global preferences
         preferences = readPreferences(event.src_path)
+        sendPreferenceStructure(self.mqttClient,"pref",preferences)
     def  on_deleted(self,  event):
+        global preferences
         preferences = {}
+
+def jsonDifference(oldData,newData):
+    difference = {}
+    for key in newData:
+        if key in oldData:
+            if type(newData[key]) is dict:
+                retData = jsonDifference(oldData[key],newData[key])
+                if retData:
+                    difference[key] = retData
+            else:
+                if oldData[key] != newData[key]:
+                    difference[key] = newData[key]
+        else:
+            difference[key] = newData[key]
+    return difference if difference else None
+                    
 
 def onConnectMQTT(client,userdata,flags, rc):
     pass
@@ -64,12 +90,6 @@ if __name__ ==  "__main__":
     #start all container
     subprocess.run(["docker", "compose", "up", "-d"])
 
-    #setup file watchdog
-    event_handler = PreferencesFileHandler()
-    observer = Observer()
-    observer.schedule(event_handler,  path=preferencePath,  recursive=False)
-    observer.start()
-
     #setup mqtt client
     #aufbau der MQTT-Verbindung
     client = mqtt.Client()
@@ -79,14 +99,20 @@ if __name__ ==  "__main__":
         client.connect("localhost",1883,60)
     except:
         print("No MQTT broker running")
-        observer.stop()
-        observer.join()
         quit()
     client.loop_start()
+
+    #setup file watchdog
+    event_handler = PreferencesFileHandler(client)
+    observer = Observer()
+    observer.schedule(event_handler,  path=preferencePath,  recursive=False)
+    observer.start()
 
     #send preferences from preferences.json
     preferences = readPreferences(preferencePath)
     sendPreferenceStructure(client,"pref",preferences)
+
+    time.sleep(100)
 
     #stop all container
     subprocess.run(["docker", "compose", "stop"])
