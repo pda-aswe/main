@@ -76,7 +76,29 @@ def jsonDifference(oldData,newData):
                     
 
 def onConnectMQTT(client,userdata,flags, rc):
-    pass
+    client.subscribe([("req/pref/#",0),])
+
+def preferenceMQTTCallback(client, userdata, msg):
+    if msg.topic == "req/pref/all":
+        sendPreferenceStructure(client,"pref",preferences)
+    else:
+        returnData = preferences
+        keys = msg.topic.split("/")
+        if len(keys) != 0:
+            for key in keys[2:]:
+                if key == "":
+                    continue
+                if key in returnData:
+                    returnData = returnData[key]
+                else:
+                    returnData = None
+                    break
+        else:
+            returnData = None
+        
+        if returnData is not None:
+            sendPreferenceStructure(client,"/".join(keys[1:]),returnData)
+
 
 #Diese Funktion wird aufgerufen, wenn es für ein Topic kein spezielles Callback gibt
 def onMessageMQTT(client, userdata, msg):
@@ -95,6 +117,7 @@ if __name__ ==  "__main__":
     client = mqtt.Client()
     client.on_connect = onConnectMQTT
     client.on_message = onMessageMQTT
+    client.message_callback_add("req/pref/#", preferenceMQTTCallback)
     try:
         client.connect("localhost",1883,60)
     except:
