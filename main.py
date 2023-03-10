@@ -4,16 +4,20 @@ import time
 import subprocess
 import json
 import os
+import threading
 from datetime import datetime, timedelta
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import paho.mqtt.client as mqtt
+import tkinter
 
 containerNames = ["bard-broker","bard-casepreis", "bard-casesport", "bard-casenews", "bard-casewelcome", "bard-servicewetter", "bard-serviceverkehrsinfos", "bard-servicekalender", "bard-servicenews", "bard-servicelocation", "bard-servicesport", "bard-servicepreis", "bard-servicemail"]
 
 preferences = {}
 
 preferencePath = os.path.join(os.getcwd(), 'preferences.json')
+
+speakThread = None
 
 def readPreferences(path):
     try:
@@ -104,6 +108,22 @@ def preferenceMQTTCallback(client, userdata, msg):
 def onMessageMQTT(client, userdata, msg):
     pass
 
+def speakRecognition():
+    t = threading.current_thread()
+    while getattr(t, "run", True):
+        print ("Recording")
+        time.sleep(0.5)
+    return
+
+def speakPress(event=None):
+    global speakThread
+    if event and int(event.type) == 4:
+        speakThread = threading.Thread(target=speakRecognition)
+        speakThread.start()
+    elif event and int(event.type) == 5:
+        speakThread.run = False
+        speakThread.join()
+
 if __name__ ==  "__main__":
     #connect to docker
     #more information: https://docker-py.readthedocs.io/en/stable/client.html
@@ -135,7 +155,14 @@ if __name__ ==  "__main__":
     preferences = readPreferences(preferencePath)
     sendPreferenceStructure(client,"pref",preferences)
 
-    time.sleep(100)
+    #create main window
+    mainWindow = tkinter.Tk()
+    mainWindow.title('BARD')
+    button = tkinter.Button(mainWindow, text='Speak', width=25)
+    button.bind('<ButtonPress-1>',speakPress)
+    button.bind('<ButtonRelease-1>',speakPress)
+    button.pack()
+    mainWindow.mainloop()
 
     #stop all container
     subprocess.run(["docker", "compose", "stop"])
