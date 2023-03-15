@@ -116,8 +116,6 @@ def preferenceMQTTCallback(client, userdata, msg):
 
 def sendSTTMessage(message):
     client.publish("stt",str(message))
-    #remove later
-    client.publish("tts",str(message))
 
 def sttMQTTCallback(client, userdata, msg):
     TTSEngine.say(str(msg.payload.decode("utf-8")))
