@@ -160,7 +160,7 @@ if __name__ ==  "__main__":
     client = docker.from_env()
 
     #start all container
-    #subprocess.run(["docker", "compose", "up", "-d"])
+    subprocess.run(["docker", "compose", "up", "-d"])
 
     #setup mqtt client
     #aufbau der MQTT-Verbindung
@@ -217,7 +217,7 @@ if __name__ ==  "__main__":
     mainWindow.mainloop()
 
     #stop all container
-    #subprocess.run(["docker", "compose", "stop"])
+    subprocess.run(["docker", "compose", "stop"])
 
     #stop file watchdog
     observer.stop()
