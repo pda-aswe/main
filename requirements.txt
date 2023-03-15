@@ -1,3 +1,7 @@
 docker
 watchdog
 paho-mqtt
+pyttsx3
+customtkinter
+sounddevice
+vosk
