@@ -1,5 +1,4 @@
 MQTT auslagern
-http://timgolden.me.uk/python/win32_how_do_i/watch_directory_for_changes.html --> Watchdog funktioniert unter windows nicht
 subprocess wieder auskommentieren
 Tests schreiben
 testen ob alle preferences ausgegeben werden (prefrencedatei verändern, preferences abfragen, automatisches preferencen verschicken)

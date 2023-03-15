@@ -1,7 +1,7 @@
 import json
 from copy import deepcopy
 from datetime import datetime, timedelta
-from watchdog.observers import Observer
+from watchdog.observers.polling import PollingObserver
 from watchdog.events import FileSystemEventHandler
 
 class Preferences:
@@ -13,7 +13,8 @@ class Preferences:
 
         #setup file watchdog
         event_handler = PreferencesFileHandler(self)
-        self.observer = Observer()
+        #only polling observer working --> os nativ broken in windows
+        self.observer = PollingObserver()
         self.observer.schedule(event_handler,  path=filepath,  recursive=False)
         self.observer.start()
 
