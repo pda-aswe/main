@@ -33,6 +33,7 @@ class Messenger(metaclass=singelton.SingletonMeta):
             self.connected = False
             self.mqttConnection.loop_stop()
             self.mqttConnection.disconnect()
+        return True
     
     def __onConnectMQTT(self,client,userdata,flags, rc):
         client.subscribe([("req/pref/#",0),("tts",0)])

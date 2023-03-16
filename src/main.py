@@ -9,11 +9,10 @@ import messenger
 
 if __name__ ==  "__main__":
     #start all container
-    #subprocess.run(["docker", "compose", "up", "-d"])
+    subprocess.run(["docker", "compose", "up", "-d"])
 
     #setup mqtt client
     mqttConnection = messenger.Messenger()
-    print(mqttConnection)
     if not mqttConnection.connect():
         print("No MQTT broker running")
         quit()
@@ -26,7 +25,7 @@ if __name__ ==  "__main__":
     mainWindow.display()
 
     #stop all container
-    #subprocess.run(["docker", "compose", "stop"])
+    subprocess.run(["docker", "compose", "stop"])
 
     #stop preferences watchdog
     preferencesObj.stop()
