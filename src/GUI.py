@@ -2,12 +2,18 @@ from tkinter import *
 import customtkinter
 import threading
 
-class GUI:
-    def __init__(self,stt,debug=False):
+#own libraries
+import STT
+import singelton
+import messenger
+
+class GUI(metaclass=singelton.SingletonMeta):
+    def __init__(self,debug=False):
         #setup vars
         self.speakThread = None
         self.debug = debug
-        self.stt = stt
+        self.stt = STT.STT()
+        self.mqttConnection = messenger.Messenger()
 
         #setup window
         customtkinter.set_appearance_mode("dark")
@@ -24,12 +30,10 @@ class GUI:
         self.window.mainloop()
      
     def __buttonSpeakPress(self,event=None):
-        global STTRecognizer
         if event and int(event.type) == 4:
             self.speakThread = threading.Thread(target=self.stt.speakRecordingThread)
             self.speakThread.start()
         elif event and int(event.type) == 5:
             self.speakThread.run = False
             self.speakThread.join()
-            print(self.stt.getText())
-            #sendSTTMessage()
+            self.mqttConnection.publish("stt",str(self.stt.getText()))

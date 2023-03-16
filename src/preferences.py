@@ -4,11 +4,16 @@ from datetime import datetime, timedelta
 from watchdog.observers.polling import PollingObserver
 from watchdog.events import FileSystemEventHandler
 
-class Preferences:
-    def __init__(self,filepath,mqttClient):
+#own libraries
+import singelton
+import messenger
+
+class Preferences(metaclass=singelton.SingletonMeta):
+    def __init__(self,filepath):
         self.preferences = {}
         self.filepath = filepath
-        self.mqttClient = mqttClient
+        self.mqttClient = messenger.Messenger()
+        self.mqttClient.setPreferenceCallback(self.send)
         self.loadPreferencesFromFile()
 
         #setup file watchdog
@@ -32,8 +37,7 @@ class Preferences:
         self.preferences = deepcopy(newPreferences)
     
     def clear(self):
-        #self.preferences = {}
-        pass
+        self.preferences = {}
 
     def send(self,path):
         if path == "all":
@@ -97,7 +101,6 @@ class  PreferencesFileHandler(FileSystemEventHandler):
 
     #UPDATE
     def  on_modified(self,  event):
-        print("modified")
         if datetime.now() - self.last_modified < timedelta(seconds=1):
             return
         else:
@@ -108,9 +111,7 @@ class  PreferencesFileHandler(FileSystemEventHandler):
 
     #UPDATE
     def  on_created(self,  event):
-        print("update")
         self.preferences.loadPreferencesFromFile()
 
     def  on_deleted(self,  event):
-        print("deleted")
         self.preferences.clear()

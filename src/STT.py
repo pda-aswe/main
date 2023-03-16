@@ -4,7 +4,10 @@ import queue
 import json
 import threading
 
-class STT:
+#own libraries
+import singelton
+
+class STT(metaclass=singelton.SingletonMeta):
     def __init__(self,debug=False):
         #setup vars
         self.STTRecognizer = None

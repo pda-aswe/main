@@ -1,5 +1,2 @@
-MQTT auslagern
 subprocess wieder auskommentieren
 Tests schreiben
-testen ob alle preferences ausgegeben werden (prefrencedatei verändern, preferences abfragen, automatisches preferencen verschicken)
-gui muss die STT nachricht verschicken irgendwie
