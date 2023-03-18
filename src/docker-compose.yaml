@@ -89,4 +89,6 @@ services:
     depends_on:
       - broker
     image: "ghcr.io/pda-aswe/servicemail"
+    volumes:
+      - ./token.json:/app/token.json
     restart: on-failure

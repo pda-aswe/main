@@ -1,21 +1,10 @@
-from __future__ import print_function
-
-import os.path
-
-from google.oauth2.credentials import Credentials
+import os
 from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
+from google.oauth2.credentials import Credentials
 
-# If modifying these scopes, delete the file token.json.
-SCOPES = ['https://www.googleapis.com/auth/gmail.send','https://www.googleapis.com/auth/calendar']
-
-
-def main():
-    """Shows basic usage of the Gmail API.
-    Lists the user's Gmail labels.
-    """
+def connect():
+    SCOPES = ['https://www.googleapis.com/auth/gmail.send','https://www.googleapis.com/auth/calendar']
+    
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -33,7 +22,3 @@ def main():
         # Save the credentials for the next run
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
-
-
-if __name__ == '__main__':
-    main()
