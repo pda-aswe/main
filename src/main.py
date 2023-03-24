@@ -12,7 +12,7 @@ import googleLogin
 if __name__ ==  "__main__":
     #connect with google
     googleLogin.connect()
-    if not os.path.isfile("token.json"):
+    if not os.path.isfile("credentials/token.json"):
         print("Google login error")
         quit()
 

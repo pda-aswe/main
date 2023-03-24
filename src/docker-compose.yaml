@@ -53,6 +53,8 @@ services:
       - broker
       - servicelocation
     image: "ghcr.io/pda-aswe/serviceverkehrsinfos"
+    volumes:
+      - ./credentials/mapquest.txt:/app/key.txt
     restart: on-failure
   servicekalender:
     container_name: bard-servicekalender
@@ -90,5 +92,5 @@ services:
       - broker
     image: "ghcr.io/pda-aswe/servicemail"
     volumes:
-      - ./token.json:/app/token.json
+      - ./credentials/token.json:/app/token.json
     restart: on-failure
