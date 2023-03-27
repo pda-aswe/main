@@ -40,6 +40,13 @@ services:
       - serviceverkehrsinfos
     image: "ghcr.io/pda-aswe/casewelcome"
     restart: on-failure
+  casekalender:
+    container_name: bard-casekalender
+    depends_on:
+      - broker
+      - servicekalender
+    image: "ghcr.io/pda-aswe/casekalender"
+    restart: on-failure
   servicewetter:
     container_name: bard-servicewetter
     depends_on:
