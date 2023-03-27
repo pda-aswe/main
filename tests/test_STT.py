@@ -1,7 +1,8 @@
 from src import STT
 from unittest.mock import patch, ANY, MagicMock
 
-def test_recordCallback():
+@patch("sounddevice.query_devices")
+def test_recordCallback(mock_sd):
     obj = STT.STT()
 
     with patch.object(obj, 'audioQueue') as mock_queue:

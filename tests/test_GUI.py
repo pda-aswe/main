@@ -10,7 +10,9 @@ class DummyEvent:
 
 @patch("STT.STT")
 @patch("messenger.Messenger")
-def test_display(mock_stt,mock_messenger):
+@patch("customtkinter.CTk")
+@patch("customtkinter.CTkButton")
+def test_display(mockt_ctk_button,mock_ctk,mock_stt,mock_messenger):
     obj = GUI.GUI()
 
     with patch.object(obj, 'window') as mock_window:
@@ -19,7 +21,9 @@ def test_display(mock_stt,mock_messenger):
 
 @patch("STT.STT")
 @patch("messenger.Messenger")
-def test_buttonSpeakPress(mock_stt,mock_messenger):
+@patch("customtkinter.CTk")
+@patch("customtkinter.CTkButton")
+def test_buttonSpeakPress(mockt_ctk_button,mock_ctk,mock_stt,mock_messenger):
     obj = GUI.GUI()
     eventObj = DummyEvent()
     eventObj.set_type(5)
