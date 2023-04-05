@@ -17,7 +17,7 @@ if __name__ ==  "__main__":
         quit()
 
     #start all container
-    subprocess.run(["docker", "compose", "up", "-d"])
+    #subprocess.run(["docker", "compose", "up", "-d"])
 
     #setup mqtt client
     mqttConnection = messenger.Messenger()
@@ -30,10 +30,11 @@ if __name__ ==  "__main__":
 
     #setup gui
     mainWindow = GUI.GUI()
+    mqttConnection.displayTextCallback = mainWindow.setOutputText
     mainWindow.display()
 
     #stop all container
-    subprocess.run(["docker", "compose", "stop"])
+    #subprocess.run(["docker", "compose", "stop"])
 
     #stop preferences watchdog
     preferencesObj.stop()

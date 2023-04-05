@@ -10,6 +10,7 @@ class Messenger(metaclass=singelton.SingletonMeta):
         self.tts = TTS.TTS()
         self.preferenceCallback = None
         self.connected = False
+        self.displayTextCallback = None
 
         #aufbau der MQTT-Verbindung
         self.mqttConnection = mqtt.Client()
@@ -48,10 +49,15 @@ class Messenger(metaclass=singelton.SingletonMeta):
     def setPreferenceCallback(self,func):
         self.preferenceCallback = func
 
+    def setTextoutputCallback(self,func):
+        self.displayTextCallback = func
+
     def publish(self,path,message):
         self.mqttConnection.publish(path,str(message))
 
     def __sttMQTTCallback(self,client, userdata, msg):
+        if self.displayTextCallback is not None:
+            self.displayTextCallback(str(msg.payload.decode("utf-8")))
         self.tts.speak(str(msg.payload.decode("utf-8")))
 
     #received default mqtt messages
