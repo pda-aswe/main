@@ -53,6 +53,8 @@ services:
       - broker
       - servicelocation
     image: "ghcr.io/pda-aswe/servicewetter"
+    volumes:
+      - ./credentials/openWeatherMap.txt:/app/key.txt
     restart: on-failure
   serviceverkehrsinfos:
     container_name: bard-serviceverkehrsinfos
