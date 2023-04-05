@@ -68,6 +68,8 @@ services:
     depends_on:
       - broker
     image: "ghcr.io/pda-aswe/servicekalender"
+    volumes:
+      - ./credentials/token.json:/app/token.json
     restart: on-failure
   servicenews:
     container_name: bard-servicenews
