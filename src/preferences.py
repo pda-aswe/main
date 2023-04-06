@@ -14,6 +14,7 @@ class Preferences(metaclass=singelton.SingletonMeta):
         self.filepath = filepath
         self.mqttClient = messenger.Messenger()
         self.mqttClient.setPreferenceCallback(self.send)
+        self.mqttClient.setgetPreferenceDataCallback(self.getData)
         self.loadPreferencesFromFile()
 
         #setup file watchdog
@@ -69,11 +70,14 @@ class Preferences(metaclass=singelton.SingletonMeta):
         if type(prefStructure) is str:
             self.__sendPreference(path,prefStructure)
         else:
-            for key in prefStructure:
-                if type(prefStructure[key]) is dict:
-                    self.__sendPreferenceStructure(path+"/"+key,prefStructure[key])
-                else:
-                    self.__sendPreference(path+"/"+key,prefStructure[key])
+            if type(prefStructure) is list:
+                self.__sendPreference(path,prefStructure)
+            else:
+                for key in prefStructure:
+                    if type(prefStructure[key]) is dict:
+                        self.__sendPreferenceStructure(path+"/"+key,prefStructure[key])
+                    else:
+                        self.__sendPreference(path+"/"+key,prefStructure[key])
 
     def stop(self):
         #stop file watchdog
@@ -93,6 +97,22 @@ class Preferences(metaclass=singelton.SingletonMeta):
             else:
                 difference[key] = newData[key]
         return difference if difference else None
+
+    def getData(self,path):
+        returnData = self.preferences
+        keys = path.split("/")
+        if len(keys) != 0:
+            for key in keys[1:]:
+                if key == "":
+                    continue
+                if key in returnData:
+                    returnData = returnData[key]
+                else:
+                    returnData = None
+                    break
+        else:
+            returnData = None
+        return returnData
 
 class  PreferencesFileHandler(FileSystemEventHandler):
     def __init__(self,preferencesObj):
