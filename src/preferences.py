@@ -69,11 +69,14 @@ class Preferences(metaclass=singelton.SingletonMeta):
         if type(prefStructure) is str:
             self.__sendPreference(path,prefStructure)
         else:
-            for key in prefStructure:
-                if type(prefStructure[key]) is dict:
-                    self.__sendPreferenceStructure(path+"/"+key,prefStructure[key])
-                else:
-                    self.__sendPreference(path+"/"+key,prefStructure[key])
+            if type(prefStructure) is list:
+                self.__sendPreference(path,prefStructure)
+            else:
+                for key in prefStructure:
+                    if type(prefStructure[key]) is dict:
+                        self.__sendPreferenceStructure(path+"/"+key,prefStructure[key])
+                    else:
+                        self.__sendPreference(path+"/"+key,prefStructure[key])
 
     def stop(self):
         #stop file watchdog
