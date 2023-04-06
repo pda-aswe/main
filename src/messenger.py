@@ -1,4 +1,10 @@
 import paho.mqtt.client as mqtt
+import paho.mqtt.subscribe as subscribe
+import paho.mqtt.publish as publish
+from multiprocessing import Process, Queue
+import datetime
+import json
+import os
 
 #own libraries
 import TTS
@@ -17,7 +23,7 @@ class Messenger(metaclass=singelton.SingletonMeta):
         self.mqttConnection.on_connect = self.__onConnectMQTT
         self.mqttConnection.on_message = self.__onMessageMQTT
         self.mqttConnection.message_callback_add("req/pref/#", self.__preferenceMQTTCallback)
-        self.mqttConnection.message_callback_add("tts", self.__sttMQTTCallback)
+        self.mqttConnection.message_callback_add("tts", self.__ttsMQTTCallback)
 
     def connect(self):
         if not self.connected:
@@ -55,11 +61,64 @@ class Messenger(metaclass=singelton.SingletonMeta):
     def publish(self,path,message):
         self.mqttConnection.publish(path,str(message))
 
-    def __sttMQTTCallback(self,client, userdata, msg):
-        if self.displayTextCallback is not None:
-            self.displayTextCallback(str(msg.payload.decode("utf-8")))
-        self.tts.speak(str(msg.payload.decode("utf-8")))
+    def __ttsMQTTCallback(self,client, userdata, msg):
+       
+        calendarEvent = self.__currentCalendarEvent("req/appointment/next","appointment/next")
+        doNotDisturb = False
+        ttsData = str(msg.payload.decode("utf-8"))
+
+        if self.displayTextCallback is not None and (calendarEvent or doNotDisturb):
+            self.displayTextCallback(ttsData)
+        else:
+            self.displayTextCallback("")
+            self.tts.speak(ttsData)
 
     #received default mqtt messages
     def __onMessageMQTT(self,client, userdata, msg):
         pass
+
+    def __currentCalendarEvent(self,requestTopic,responseTopic):
+        q = Queue()
+        process = Process(target=mqttRequestResponseProzess, args=(q,requestTopic,responseTopic))
+        process.start()
+        process.join(timeout=3)
+        process.terminate()
+        if process.exitcode == 0:
+            try:
+                mqttData = q.get(timeout=1)
+            except:
+                return(False)
+
+            try:
+                mqttData = json.loads(str(mqttData.decode("utf-8")))
+            except:
+                print("Can't decode message")
+                return(False)
+
+            start = mqttData.get("start",None)
+            if start is not None:
+                try:
+                    start = datetime.datetime.strptime(start, '%Y-%m-%dT%H:%M:%S%z')
+                except:
+                    return(False)
+                    
+
+                if start <= datetime.datetime.now().replace(tzinfo=start.tzinfo):
+                    return(True)
+                else:
+                    return(False)
+                    
+            else:
+                return(False)
+
+def mqttRequestResponseProzess(q,requestTopic,responseTopic):
+    docker_container = os.environ.get('DOCKER_CONTAINER', False)
+    if docker_container:
+        mqtt_address = "broker"
+    else:
+        mqtt_address = "localhost"
+
+    publish.single(requestTopic,hostname=mqtt_address,port=1883)
+    mqttResponse = subscribe.simple(responseTopic,hostname=mqtt_address,port=1883).payload
+
+    q.put(mqttResponse)
