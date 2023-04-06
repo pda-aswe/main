@@ -14,6 +14,7 @@ class GUI(metaclass=singelton.SingletonMeta):
         self.debug = debug
         self.stt = STT.STT()
         self.mqttConnection = messenger.Messenger()
+        self.mqttConnection.setTextoutputCallback(self.setOutputText)
 
         #setup window
         customtkinter.set_appearance_mode("dark")

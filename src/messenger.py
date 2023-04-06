@@ -15,6 +15,7 @@ class Messenger(metaclass=singelton.SingletonMeta):
         #setup TTS
         self.tts = TTS.TTS()
         self.preferenceCallback = None
+        self.getPreferenceCallback = None
         self.connected = False
         self.displayTextCallback = None
 
@@ -55,6 +56,9 @@ class Messenger(metaclass=singelton.SingletonMeta):
     def setPreferenceCallback(self,func):
         self.preferenceCallback = func
 
+    def setgetPreferenceDataCallback(self,func):
+        self.getPreferenceCallback = func
+
     def setTextoutputCallback(self,func):
         self.displayTextCallback = func
 
@@ -64,7 +68,27 @@ class Messenger(metaclass=singelton.SingletonMeta):
     def __ttsMQTTCallback(self,client, userdata, msg):
        
         calendarEvent = self.__currentCalendarEvent("req/appointment/next","appointment/next")
+        doNotDisturbTimes = self.getPreferenceCallback("pref/doNotDisturb")
+       
         doNotDisturb = False
+        for doNotDisturbTime in doNotDisturbTimes:
+            try:
+                fromTime = datetime.datetime.strptime(doNotDisturbTime['from'], '%H:%M').time()
+                toTime = datetime.datetime.strptime(doNotDisturbTime['to'], '%H:%M').time()
+            except:
+                continue
+
+            now = datetime.datetime.now().time()
+
+            if fromTime > toTime:
+                if fromTime <= now <= datetime.time(23,59,59) or datetime.time(00,00,00) <= now <= toTime:
+                    doNotDisturb = True
+                    break
+            else:
+                if fromTime <= now <= toTime:
+                    doNotDisturb = True
+                    break
+        
         ttsData = str(msg.payload.decode("utf-8"))
 
         if self.displayTextCallback is not None and (calendarEvent or doNotDisturb):
