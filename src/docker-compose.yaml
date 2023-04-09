@@ -96,6 +96,8 @@ services:
     depends_on:
       - broker
     image: "ghcr.io/pda-aswe/servicepreis"
+    volumes:
+      - ./credentials/finnhub.txt:/app/key.txt
     restart: on-failure
   servicemail:
     container_name: bard-servicemail
