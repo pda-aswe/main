@@ -25,9 +25,9 @@
     ],
     "transportPriority": [
       "car",
-      "bike",
-      "publicTransport",
-      "walk"
+      "bicycle",
+      "public",
+      "pedestrian"
     ],
     "location": {
       "home": {
