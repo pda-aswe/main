@@ -39,7 +39,7 @@ class GUI(metaclass=singelton.SingletonMeta):
         elif event and int(event.type) == 5:
             self.speakThread.run = False
             self.speakThread.join()
-            self.mqttConnection.publish("stt",str(self.stt.getText()))
+            self.stt.sendSTTText()
 
     def setOutputText(self,outputData):
         self.outputText['text'] = outputData
