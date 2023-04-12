@@ -9,10 +9,11 @@ class DummyEvent:
         self.type = data
 
 @patch("STT.STT")
+@patch("spacy.load")
 @patch("messenger.Messenger")
 @patch("customtkinter.CTk")
 @patch("customtkinter.CTkButton")
-def test_display(mockt_ctk_button,mock_ctk,mock_stt,mock_messenger):
+def test_display(mockt_ctk_button,mock_ctk,mock_stt,mock_spacy,mock_messenger):
     obj = GUI.GUI()
 
     with patch.object(obj, 'window') as mock_window:
@@ -20,10 +21,11 @@ def test_display(mockt_ctk_button,mock_ctk,mock_stt,mock_messenger):
         mock_window.mainloop.assert_called()
 
 @patch("STT.STT")
+@patch("spacy.load")
 @patch("messenger.Messenger")
 @patch("customtkinter.CTk")
 @patch("customtkinter.CTkButton")
-def test_buttonSpeakPress(mockt_ctk_button,mock_ctk,mock_stt,mock_messenger):
+def test_buttonSpeakPress(mockt_ctk_button,mock_ctk,mock_stt,mock_spacy,mock_messenger):
     obj = GUI.GUI()
     eventObj = DummyEvent()
     eventObj.set_type(5)
