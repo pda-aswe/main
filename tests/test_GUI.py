@@ -28,6 +28,6 @@ def test_buttonSpeakPress(mockt_ctk_button,mock_ctk,mock_stt,mock_messenger):
     eventObj = DummyEvent()
     eventObj.set_type(5)
 
-    with patch.object(obj, 'mqttConnection') as mock_connection, patch.object(obj, "speakThread"), patch.object(obj, "stt") as mock_stt_obj:
+    with patch.object(obj, "speakThread"), patch.object(obj, "stt") as mock_stt_obj:
         obj._GUI__buttonSpeakPress(eventObj)
-        mock_connection.publish.assert_called_with('stt', ANY)
+        mock_stt_obj.sendSTTText.assert_called()
