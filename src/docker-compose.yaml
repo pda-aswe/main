@@ -13,6 +13,8 @@ services:
       - servicekalender
       - servicemail
     image: "ghcr.io/pda-aswe/casepreis"
+    volumes:
+      - ./dataStores/useCasePrice.json:/app/watches.json
     restart: on-failure
   casesport:
     container_name: bard-casesport
