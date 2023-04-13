@@ -63,6 +63,7 @@ class STT(metaclass=singelton.SingletonMeta):
         sttData["numbers"] = []
         sttData["adp"] = []
         sttData["adj"] = []
+        sttData["adv"] = []
         sttData["cleaned"] = ""
         for token in doc:
             if token.lemma_ != "--":
@@ -102,6 +103,8 @@ class STT(metaclass=singelton.SingletonMeta):
                     sttData["numbers"].append(token.lemma_.lower())
                 elif token.pos_ == "ADP":
                     sttData["adp"].append(token.lemma_.lower())
+                elif token.pos_ == "ADV":
+                    sttData["adv"].append(token.lemma_.lower())
                 elif token.pos_ == "ADJ":
                     sttData["adj"].append(token.lemma_.lower())
                 elif token.pos_ == "PROPN":
