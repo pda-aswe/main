@@ -89,11 +89,12 @@ class STT(metaclass=singelton.SingletonMeta):
                     if sttData["cleaned"] != "":
                         sttData["cleaned"] += " "
                     sttData["cleaned"] += token.lemma_.lower()
-                    tokenData = {}
-                    tokenData['type'] = token.pos_
-                    tokenData['token'] = token.lemma_.lower()
-                    tokenData['stopWord'] = token.is_stop
-                    sttData["tokens"].append(tokenData)
+                    
+                tokenData = {}
+                tokenData['type'] = token.pos_
+                tokenData['token'] = token.lemma_.lower()
+                tokenData['stopWord'] = token.is_stop
+                sttData["tokens"].append(tokenData)
                 
                 if token.pos_ == "VERB":
                     sttData["verbs"].append(token.lemma_.lower())

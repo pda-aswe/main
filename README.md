@@ -47,6 +47,9 @@ Mit `pip3 install -r requirements.txt` werden alle benötigen Python Pakete nach
    "adj":[
       "LISTE","ALLER","ADJEKTIVE"
    ],
+   "adv": [
+      "LISTE","ALLER","ADVERBEN"
+   ],
    "cleaned":"<STT OHNE STOPWÖRTER UND NUR GRUNDFORMEN>"
 }
 ```
