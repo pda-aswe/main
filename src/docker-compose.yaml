@@ -80,6 +80,8 @@ services:
     depends_on:
       - broker
     image: "ghcr.io/pda-aswe/servicenews"
+    volumes:
+      - ./credentials/worldNews.txt:/app/key.txt
     restart: on-failure
   servicelocation:
     container_name: bard-servicelocation
