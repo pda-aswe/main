@@ -14,9 +14,14 @@ def connect():
         creds = Credentials.from_authorized_user_file('credentials/token.json', SCOPES)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
+        createNewToken = True
         if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
+            try:
+                creds.refresh(Request())
+                createNewToken = False
+            except:
+                os.remove('credentials/token.json')
+        if createNewToken:
             flow = InstalledAppFlow.from_client_secrets_file(
                 'credentials/credentials.json', SCOPES)
             creds = flow.run_local_server(port=0)
